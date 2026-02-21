@@ -16,342 +16,188 @@
     --accent:#ff3b3b;
     --green:#2ecc71;
 }
-
-body{
-    margin:0;
-    font-family:'Poppins',sans-serif;
-    background:var(--bg);
-    color:var(--text);
-}
-
-/* HEADER */
-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:25px 50px;
-}
-
-.logo{
-    font-size:28px;
-    font-weight:700;
-}
-.logo span{
-    color:var(--accent);
-}
-
-.config-btn{
-    background:var(--glass);
-    border:none;
-    color:white;
-    padding:10px 14px;
-    border-radius:12px;
-    cursor:pointer;
-    transition:.3s;
-}
-.config-btn:hover{
-    transform:scale(1.1);
-}
-
-/* CATEGORIAS */
-.topbar{
-    display:flex;
-    justify-content:center;
-    gap:18px;
-    margin-bottom:20px;
-}
-.topbar button{
-    padding:12px 26px;
-    border:none;
-    border-radius:30px;
-    font-weight:600;
-    cursor:pointer;
-    background:var(--glass);
-    color:white;
-    opacity:.7;
-    transition:.3s;
-}
-.topbar button.active{
-    opacity:1;
-    transform:scale(1.08);
-}
-
-/* BUSCADOR */
-.search{
-    text-align:center;
-    margin:25px 0;
-}
-.search input{
-    width:50%;
-    padding:14px;
-    border-radius:30px;
-    border:none;
-    background:var(--glass);
-    color:white;
-    outline:none;
-}
-
-/* GRID */
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
-    gap:30px;
-    padding:40px 60px;
-}
-
-.card{
-    background:var(--card);
-    border-radius:18px;
-    overflow:hidden;
-    position:relative;
-    transition:.4s;
-}
-.card:hover{
-    transform:translateY(-10px) scale(1.03);
-}
-
-.card img{
-    width:100%;
-    height:300px;
-    object-fit:cover;
-}
-
-.card h3{
-    margin:0;
-    padding:15px;
-    text-align:center;
-    font-size:16px;
-}
-
-/* STATUS */
-.status{
-    position:absolute;
-    top:12px;
-    right:12px;
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    background:rgba(255,255,255,.2);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-}
-.status.visto{
-    background:var(--green);
-}
-
-/* DELETE */
-.delete{
-    position:absolute;
-    top:12px;
-    left:12px;
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    background:rgba(255,0,0,.6);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-}
-
-/* FAB */
-.fab{
-    position:fixed;
-    bottom:40px;
-    right:40px;
-    width:65px;
-    height:65px;
-    border-radius:50%;
-    background:var(--accent);
-    color:white;
-    font-size:34px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    box-shadow:0 20px 40px rgba(0,0,0,.5);
-}
-
-/* MODAL */
-.overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.7);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    visibility:hidden;
-    opacity:0;
-    transition:.3s;
-}
-.overlay.active{
-    visibility:visible;
-    opacity:1;
-}
-
-.box{
-    background:#1a1d24;
-    padding:35px;
-    border-radius:18px;
-    width:340px;
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-}
-
-.box input, .box select{
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    background:white;
-    color:black;
-}
-
-.box button{
-    padding:12px;
-    border:none;
-    border-radius:10px;
-    font-weight:600;
-    background:var(--accent);
-    color:white;
-    cursor:pointer;
-}
-
-.preview{
-    width:100%;
-    height:180px;
-    object-fit:cover;
-    border-radius:12px;
-}
+body{margin:0;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);}
+header{display:flex;justify-content:space-between;align-items:center;padding:25px 50px;}
+.logo{font-size:28px;font-weight:700;}
+.logo span{color:var(--accent);}
+.config-btn{background:var(--glass);border:none;color:white;padding:10px 14px;border-radius:12px;cursor:pointer;}
+.topbar{display:flex;justify-content:center;gap:18px;margin-bottom:20px;}
+.topbar button{padding:12px 26px;border:none;border-radius:30px;font-weight:600;cursor:pointer;background:var(--glass);color:white;opacity:.7;}
+.topbar button.active{opacity:1;transform:scale(1.08);}
+.search{text-align:center;margin:25px 0;}
+.search input{width:50%;padding:14px;border-radius:30px;border:none;background:var(--glass);color:white;outline:none;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:30px;padding:40px 60px;}
+.card{background:var(--card);border-radius:18px;overflow:hidden;position:relative;}
+.card img{width:100%;height:300px;object-fit:cover;}
+.card h3{margin:0;padding:15px;text-align:center;font-size:16px;}
+.status,.delete{position:absolute;top:12px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.status{right:12px;background:rgba(255,255,255,.2);}
+.status.visto{background:var(--green);}
+.delete{left:12px;background:rgba(255,0,0,.6);}
+.fab{position:fixed;bottom:40px;right:40px;width:65px;height:65px;border-radius:50%;background:var(--accent);color:white;font-size:34px;display:flex;justify-content:center;align-items:center;cursor:pointer;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;visibility:hidden;opacity:0;transition:.3s;}
+.overlay.active{visibility:visible;opacity:1;}
+.box{background:#1a1d24;padding:35px;border-radius:18px;width:340px;display:flex;flex-direction:column;gap:15px;}
+.box input,.box select{padding:12px;border-radius:10px;border:none;background:white;color:black;}
+.box button{padding:12px;border:none;border-radius:10px;font-weight:600;background:var(--accent);color:white;cursor:pointer;}
+.preview{width:100%;height:180px;object-fit:cover;border-radius:12px;}
 </style>
 </head>
 
 <body>
 
 <header>
-    <div class="logo">Bitacora<span>.Hub</span></div>
-    <button class="config-btn" onclick="openConfig()">⚙</button>
+<div class="logo">Bitacora<span>.Hub</span></div>
+<button class="config-btn" onclick="openConfig()">⚙</button>
 </header>
 
 <div class="topbar">
-    <button class="active" onclick="filterCategory('all', this)">Todo</button>
-    <button onclick="filterCategory('anime', this)">Animes</button>
-    <button onclick="filterCategory('pelicula', this)">Películas</button>
-    <button onclick="filterCategory('serie', this)">Series</button>
+<button class="active" onclick="filterCategory('all', this)">Todo</button>
+<button onclick="filterCategory('anime', this)">Animes</button>
+<button onclick="filterCategory('pelicula', this)">Películas</button>
+<button onclick="filterCategory('serie', this)">Series</button>
 </div>
 
 <div class="search">
-    <input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
+<input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
 </div>
 
 <div class="grid" id="grid"></div>
 
 <div class="fab" onclick="openModal()">+</div>
 
-<!-- MODAL AGREGAR -->
 <div class="overlay" id="overlay">
-    <div class="box">
-        <input type="file" id="imageInput" accept="image/*">
-        <img id="preview" class="preview" style="display:none;">
-        <input type="text" id="title" placeholder="Nombre">
-        <select id="category">
-            <option value="anime">Anime</option>
-            <option value="pelicula">Película</option>
-            <option value="serie">Serie</option>
-        </select>
-        <button onclick="addItem()">Agregar</button>
-    </div>
+<div class="box">
+<input type="file" id="imageInput" accept="image/*">
+<img id="preview" class="preview" style="display:none;">
+<input type="text" id="title" placeholder="Nombre">
+<select id="category">
+<option value="anime">Anime</option>
+<option value="pelicula">Película</option>
+<option value="serie">Serie</option>
+</select>
+<button onclick="addItem()">Agregar</button>
+</div>
 </div>
 
-<!-- MODAL CONFIG -->
 <div class="overlay" id="configOverlay">
-    <div class="box">
-        <button onclick="exportData()">Descargar progreso (.json)</button>
-        <input type="file" id="importFile" accept=".json">
-        <button onclick="importData()">Importar progreso</button>
-    </div>
+<div class="box">
+<button onclick="exportData()">Descargar progreso (.json)</button>
+<input type="file" id="importFile" accept=".json">
+<button onclick="importData()">Importar progreso</button>
+</div>
 </div>
 
 <script>
-let items = JSON.parse(localStorage.getItem("bitacora")) || [];
+document.addEventListener("DOMContentLoaded", function(){
+
+let db;
+let items = [];
 let currentFilter = "all";
 
-function save(){
-    localStorage.setItem("bitacora", JSON.stringify(items));
+const request = indexedDB.open("BitacoraDB", 1);
+
+request.onupgradeneeded = function(e){
+    db = e.target.result;
+    if(!db.objectStoreNames.contains("items")){
+        db.createObjectStore("items", { keyPath: "id", autoIncrement: true });
+    }
+};
+
+request.onsuccess = function(e){
+    db = e.target.result;
+    loadItems();
+};
+
+function loadItems(){
+    const tx = db.transaction("items", "readonly");
+    const req = tx.objectStore("items").getAll();
+    req.onsuccess = () => {
+        items = req.result;
+        render();
+    };
 }
 
-function openModal(){
+window.openModal = function(){
     document.getElementById("overlay").classList.add("active");
-}
+};
 
-function openConfig(){
+window.openConfig = function(){
     document.getElementById("configOverlay").classList.add("active");
-}
+};
 
-document.querySelectorAll(".overlay").forEach(o=>{
-    o.onclick=e=>{
-        if(e.target.classList.contains("overlay"))
-            o.classList.remove("active");
-    }
-});
-
-document.getElementById("imageInput").addEventListener("change", function(){
-    const file=this.files[0];
-    if(file){
-        const reader=new FileReader();
-        reader.onload=e=>{
-            document.getElementById("preview").src=e.target.result;
-            document.getElementById("preview").style.display="block";
+document.querySelectorAll(".overlay").forEach(overlay => {
+    overlay.addEventListener("click", function(e){
+        if(e.target === overlay){
+            overlay.classList.remove("active");
         }
-        reader.readAsDataURL(file);
-    }
+    });
 });
 
-function addItem(){
-    const title=document.getElementById("title").value;
-    const category=document.getElementById("category").value;
-    const image=document.getElementById("preview").src;
 
-    if(!title||!image)return;
+window.addItem = function(){
+    const title = document.getElementById("title").value;
+    const category = document.getElementById("category").value;
+    const file = document.getElementById("imageInput").files[0];
 
-    items.push({title,image,category,visto:false});
-    save();
-    render();
+    if(!title || !file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+        const tx = db.transaction("items", "readwrite");
+
+        tx.objectStore("items").add({
+            title,
+            category,
+            image: e.target.result,
+            visto:false
+        });
+
+        tx.oncomplete = function(){
+            loadItems();
+        };
+    };
+
+    reader.readAsDataURL(file);
 
     document.getElementById("overlay").classList.remove("active");
-    document.getElementById("title").value="";
-    document.getElementById("preview").style.display="none";
-}
+};
 
-function toggleStatus(index){
-    items[index].visto=!items[index].visto;
-    save();
-    render();
-}
+window.toggleStatus = function(index){
+    const item = items[index];
+    item.visto = !item.visto;
 
-function deleteItem(index){
-    items.splice(index,1);
-    save();
-    render();
-}
+    const tx = db.transaction("items", "readwrite");
+    tx.objectStore("items").put(item);
+    tx.oncomplete = loadItems;
+};
 
-function filterCategory(cat,btn){
-    currentFilter=cat;
-    document.querySelectorAll(".topbar button").forEach(b=>b.classList.remove("active"));
+window.deleteItem = function(index){
+    const id = items[index].id;
+
+    const tx = db.transaction("items", "readwrite");
+    tx.objectStore("items").delete(id);
+    tx.oncomplete = loadItems;
+};
+
+window.filterCategory = function(cat,btn){
+    currentFilter = cat;
+    document.querySelectorAll(".topbar button")
+        .forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
     render();
-}
+};
 
-function render(){
-    const grid=document.getElementById("grid");
-    const search=document.getElementById("search").value.toLowerCase();
+window.render = function(){
+    const grid = document.getElementById("grid");
+    const search = document.getElementById("search").value.toLowerCase();
     grid.innerHTML="";
 
     items.forEach((item,index)=>{
         if((currentFilter==="all"||item.category===currentFilter)
-        &&item.title.toLowerCase().includes(search)){
+        && item.title.toLowerCase().includes(search)){
+
             grid.innerHTML+=`
             <div class="card">
                 <div class="delete" onclick="deleteItem(${index})">✕</div>
@@ -361,30 +207,56 @@ function render(){
             </div>`;
         }
     });
-}
+};
 
-function exportData(){
-    const blob=new Blob([JSON.stringify(items)],{type:"application/json"});
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download="bitacora_backup.json";
-    a.click();
-}
+window.exportData = function(){
+    const tx = db.transaction("items", "readonly");
+    const req = tx.objectStore("items").getAll();
 
-function importData(){
-    const file=document.getElementById("importFile").files[0];
-    if(!file)return;
+    req.onsuccess = function(){
+        const dataStr = JSON.stringify(req.result, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
 
-    const reader=new FileReader();
-    reader.onload=e=>{
-        items=JSON.parse(e.target.result);
-        save();
-        render();
-    }
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "bitacora_backup.json";
+        a.click();
+    };
+};
+
+window.importData = function(){
+
+    const file = document.getElementById("importFile").files[0];
+    if(!file) return alert("Selecciona un archivo primero");
+
+    const reader = new FileReader();
+
+    reader.onload = function(event){
+
+        const datos = JSON.parse(event.target.result);
+
+        const tx = db.transaction("items", "readwrite");
+        const store = tx.objectStore("items");
+
+        if(Array.isArray(datos)){
+            datos.forEach(item=>{
+                delete item.id;
+                store.add(item);
+            });
+        }
+
+        tx.oncomplete = function(){
+            alert("Importado correctamente ✅");
+            loadItems();
+            document.getElementById("configOverlay")
+                .classList.remove("active");
+        };
+    };
+
     reader.readAsText(file);
-}
+};
 
-render();
+});
 </script>
 
 </body>
