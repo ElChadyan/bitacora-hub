@@ -8,150 +8,344 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
-    --bg: radial-gradient(circle at 20% 20%,#1c1f26,#0f1116 70%);
+:root {
+    --bg: radial-gradient(circle at 20% 20%, #1c1f26, #0f1116 70%);
     --card: rgba(255,255,255,0.06);
     --glass: rgba(255,255,255,0.08);
-    --text:white;
-    --accent:#ff3b3b;
-    --green:#2ecc71;
-}
-body{margin:0;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);}
-header{display:flex;justify-content:space-between;align-items:center;padding:25px 50px;}
-.logo{font-size:28px;font-weight:700;}
-.logo span{color:var(--accent);}
-.config-btn{background:var(--glass);border:none;color:white;padding:10px 14px;border-radius:12px;cursor:pointer;}
-.topbar button.active{opacity:1;transform:scale(1.08);}
-.search{text-align:center;margin:25px 0;}
-.search input{width:50%;padding:14px;border-radius:30px;border:none;background:var(--glass);color:white;outline:none;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:30px;padding:40px 60px;}
-.card{background:var(--card);border-radius:18px;overflow:hidden;position:relative;}
-.card img{width:100%;height:300px;object-fit:cover;}
-.card h3{margin:0;padding:15px;text-align:center;font-size:16px;}
-.status,.delete{position:absolute;top:12px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.status{right:12px;background:rgba(255,255,255,.2);}
-.status.visto{background:var(--green);}
-.delete{left:12px;background:rgba(255,0,0,.6);}
-.fab{position:fixed;bottom:40px;right:40px;width:65px;height:65px;border-radius:50%;background:var(--accent);color:white;font-size:34px;display:flex;justify-content:center;align-items:center;cursor:pointer;}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;visibility:hidden;opacity:0;transition:.3s;}
-.overlay.active{visibility:visible;opacity:1;}
-.box{background:#1a1d24;padding:35px;border-radius:18px;width:340px;display:flex;flex-direction:column;gap:15px;}
-.box input,.box select{padding:12px;border-radius:10px;border:none;background:white;color:black;}
-.box button{padding:12px;border:none;border-radius:10px;font-weight:600;background:var(--accent);color:white;cursor:pointer;}
-.preview{width:100%;height:180px;object-fit:cover;border-radius:12px;}
-.edit{
-    position:absolute;
-    bottom:12px;
-    right:12px;
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(0,0,0,.6);
-    cursor:pointer;
-    font-size:14px;
-    transition:.2s;
+    --text: white;
+    --accent: #ff3b3b;
+    --green: #2ecc71;
 }
 
-.edit:hover{
-    transform:scale(1.1);
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
 }
 
-.topbar{
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-    gap:16px;
-    margin:30px 0 80px;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 50px;
 }
 
-.topbar button{
-    padding:12px 26px;
-    border:none;
-    border-radius:30px;
-    font-weight:600;
-    cursor:pointer;
-    background:var(--glass);
-    color:white;
-    opacity:.7;
-    transition:all .2s ease;
-    white-space:nowrap;
+.logo {
+    font-size: 28px;
+    font-weight: 700;
 }
 
-.topbar button:hover{
-    opacity:1;
+.logo span {
+    color: var(--accent);
 }
 
-.topbar button.active{
-    opacity:1;
-    transform:scale(1.08);
+.config-btn {
+    background: var(--glass);
+    border: none;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 12px;
+    cursor: pointer;
 }
 
-.anime-wrapper{
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+.topbar {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 30px 0 80px;
+    flex-wrap: wrap;
 }
 
-.subbar{
-    position:absolute;
-    top:48px;
-    z-index:10;
-    left:50%;
-    transform:translateX(-50%) translateY(-10px);
-
-    display:flex;
-    gap:8px;
-    padding:10px 15px;
-    border-radius:20px;
-    background:rgba(0,0,0,0.6);
-    backdrop-filter:blur(10px);
-
-    opacity:0;
-    pointer-events:none;
-    transition:.25s ease;
+.topbar button {
+    padding: 12px 26px;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--glass);
+    color: white;
+    opacity: .7;
+    transition: all .2s;
 }
 
-.subbar.active{
-    opacity:1;
-    pointer-events:auto;
-    transform:translateX(-50%) translateY(0);
+.topbar button:hover { opacity: 1; }
+.topbar button.active { opacity: 1; transform: scale(1.08); }
+
+.anime-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.subbar button{
-    padding:6px 12px;
-    font-size:13px;
+.subbar {
+    position: absolute;
+    top: 48px;
+    z-index: 10;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    display: flex;
+    gap: 8px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: .25s;
 }
 
-.subbar button.active{
-    opacity:1;
-    transform:scale(1.05);
+.subbar.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
 }
 
+.subbar button {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.search {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.search input {
+    width: 50%;
+    padding: 14px;
+    border-radius: 30px;
+    border: none;
+    background: var(--glass);
+    color: white;
+    outline: none;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 28px;
+    padding: 40px 5vw;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.card {
+    background: var(--card);
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 420px; /* evita tarjetas muy cortas */
+}
+
+.card img {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    object-position: center top;
+    flex-shrink: 0;
+}
+
+.card h3 {
+    margin: 0;
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.35;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status, .delete {
+    position: absolute;
+    top: 12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.status { right: 12px; background: rgba(255,255,255,.2); }
+.status.visto { background: var(--green); }
+.delete { left: 12px; background: rgba(255,0,0,.6); }
+
+.edit {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.65);
+    color: white;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 5;
+}
+
+.edit:hover {
+    transform: scale(1.15);
+    background: rgba(0,0,0,0.85);
+    box-shadow: 0 0 12px rgba(255,59,59,0.5);
+}
+
+.subtag {
+    position: absolute;
+    bottom: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 59, 59, 0.92);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    pointer-events: none;
+    white-space: nowrap;
+    max-width: 88%;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.45);
+    line-height: 1.3;
+    transition: bottom 0.2s ease;
+}
+
+.card:has(.subtag) {
+    position: relative;
+}
+
+.subtag {
+    bottom: max(55px, calc(55px + (length(var(--text-length, "")) * 0.5px)));
+}
+
+.fab {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: .3s;
+}
+
+.overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.box {
+    background: #1a1d24;
+    padding: 35px;
+    border-radius: 18px;
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.box input, .box select {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: white;
+    color: black;
+}
+
+.box button {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+}
+
+.preview {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* PAGINACIÓN (sin cambios) */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 50px 0 100px;
+    flex-wrap: wrap;
+}
+
+.pagination button {
+    padding: 10px 18px;
+    border: none;
+    background: var(--glass);
+    color: white;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all .2s;
+    min-width: 44px;
+}
+
+.pagination button.active,
+.pagination button:hover {
+    background: var(--accent);
+    transform: scale(1.08);
+}
+
+.pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-<div class="logo">Bitacora<span>.Hub</span></div>
-<button class="config-btn" onclick="openConfig()">⚙</button>
+    <div class="logo">Bitacora<span>.Hub</span></div>
+    <button class="config-btn" onclick="openConfig()">⚙</button>
 </header>
 
 <div class="topbar">
-
     <button class="active" onclick="filterCategory('all', this)">Todo</button>
-
     <div class="anime-wrapper">
-
         <button onclick="filterCategory('anime', this)">Animes</button>
-
         <div class="subbar" id="subbar">
             <button onclick="filterSubcategory('all', this)" class="active">Todas</button>
-            <button onclick="filterSubcategory('+18', this)">+18</button>
+            <button onclick="filterSubcategory('hentai', this)">Hentai</button>
             <button onclick="filterSubcategory('isekai', this)">Isekai</button>
             <button onclick="filterSubcategory('romance', this)">Romance</button>
             <button onclick="filterSubcategory('comedia', this)">Comedia</button>
@@ -160,355 +354,407 @@ header{display:flex;justify-content:space-between;align-items:center;padding:25p
             <button onclick="filterSubcategory('terror', this)">Terror</button>
             <button onclick="filterSubcategory('deportes', this)">Deportes</button>
         </div>
-
     </div>
-
     <button onclick="filterCategory('pelicula', this)">Películas</button>
     <button onclick="filterCategory('serie', this)">Series</button>
-
 </div>
 
 <div class="search">
-<input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
+    <input type="text" id="search" placeholder="Buscar..." onkeyup="searchAndRender()">
 </div>
 
 <div class="grid" id="grid"></div>
 
+<div id="pagination" class="pagination"></div>
+
 <div class="fab" onclick="openModal()">+</div>
 
 <div class="overlay" id="overlay">
-<div class="box">
-<input type="file" id="imageInput" accept="image/*">
-<img id="preview" class="preview" style="display:none;">
-
-<input type="text" id="title" placeholder="Nombre">
-
-<select id="category" onchange="toggleSubcategory()">
-<option value="anime">Anime</option>
-<option value="pelicula">Película</option>
-<option value="serie">Serie</option>
-</select>
-
-<select id="subcategory" style="display:none;">
-<option value="">Subcategoría</option>
-<option value="+18">+18</option>
-<option value="isekai">Isekai</option>
-<option value="romance">Romance</option>
-<option value="comedia">Comedia</option>
-<option value="slice">Slice of Life</option>
-<option value="drama">Drama</option>
-<option value="terror">Terror</option>
-<option value="deportes">Deportes</option>
-</select>
-
-<button id="addBtn" onclick="addItem()">Agregar</button>
-<button id="saveEdit" style="display:none;background:var(--green);">Guardar</button>
-<button id="cancelEdit" style="display:none;background:#e74c3c;">Cancelar</button>
-</div>
+    <div class="box">
+        <input type="file" id="imageInput" accept="image/*">
+        <img id="preview" class="preview" style="display:none;">
+        <input type="text" id="title" placeholder="Nombre">
+        <select id="category" onchange="toggleSubcategory()">
+            <option value="anime">Anime</option>
+            <option value="pelicula">Película</option>
+            <option value="serie">Serie</option>
+        </select>
+        <select id="subcategory" style="display:none;">
+            <option value="">Subcategoría</option>
+            <option value="hentai">Hentai</option>
+            <option value="isekai">Isekai</option>
+            <option value="romance">Romance</option>
+            <option value="comedia">Comedia</option>
+            <option value="slice">Slice of Life</option>
+            <option value="drama">Drama</option>
+            <option value="terror">Terror</option>
+            <option value="deportes">Deportes</option>
+        </select>
+        <button id="addBtn" onclick="addItem()">Agregar</button>
+        <button id="saveEdit" style="display:none; background:var(--green);">Guardar</button>
+        <button id="cancelEdit" style="display:none; background:#e74c3c;">Cancelar</button>
+    </div>
 </div>
 
 <div class="overlay" id="configOverlay">
-<div class="box">
-<button onclick="exportData()">Descargar progreso (.json)</button>
-<input type="file" id="importFile" accept=".json">
-<button onclick="importData()">Importar progreso</button>
-</div>
+    <div class="box">
+        <button onclick="exportData()">Descargar progreso (.json)</button>
+        <input type="file" id="importFile" accept=".json">
+        <button onclick="importData()">Importar progreso</button>
+    </div>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
 
-    let db;
-    let items = [];
-    let currentFilter = "all";
-    let currentSubFilter = "all";
-    let editingItemId = null;
+let db;
+let items = [];
+let currentFilter = "all";
+let currentSubFilter = "all";
+let editingItemId = null;
+let currentPage = 1;
+const itemsPerPage = 12; // 4 columnas × 3 filas
 
-    const request = indexedDB.open("BitacoraDB", 1);
+const request = indexedDB.open("BitacoraDB", 1);
 
-    request.onupgradeneeded = function(e){
-        db = e.target.result;
-        if(!db.objectStoreNames.contains("items")){
-            db.createObjectStore("items", { keyPath: "id", autoIncrement: true });
-        }
-    };
-
-    request.onsuccess = function(e){
-        db = e.target.result;
-        loadItems();
-    };
-
-    function loadItems(){
-        const tx = db.transaction("items", "readonly");
-        const req = tx.objectStore("items").getAll();
-        req.onsuccess = () => {
-            items = req.result || [];
-            render();
-        };
+request.onupgradeneeded = function(e) {
+    db = e.target.result;
+    if (!db.objectStoreNames.contains("items")) {
+        db.createObjectStore("items", { keyPath: "id", autoIncrement: true });
     }
+};
 
-    window.openModal = function(){
-        document.getElementById("overlay").classList.add("active");
-        toggleSubcategory();
+request.onsuccess = function(e) {
+    db = e.target.result;
+    loadItems();
+};
+
+function loadItems() {
+    const tx = db.transaction("items", "readonly");
+    const req = tx.objectStore("items").getAll();
+    req.onsuccess = () => {
+        items = req.result || [];
+        currentPage = 1;
+        render();
     };
+}
 
-    window.openConfig = function(){
-        document.getElementById("configOverlay").classList.add("active");
-    };
+function getFilteredItems() {
+    const searchTerm = document.getElementById("search").value.toLowerCase().trim();
+    return items.filter(item => {
+        const matchCategory = currentFilter === "all" || item.category === currentFilter;
+        const matchSub = currentFilter !== "anime" || currentSubFilter === "all" || item.subcategory === currentSubFilter;
+        const matchSearch = item.title.toLowerCase().includes(searchTerm);
+        return matchCategory && matchSub && matchSearch;
+    });
+}
 
-    window.toggleSubcategory = function(){
-        const category = document.getElementById("category").value;
-        const sub = document.getElementById("subcategory");
-        if(category === "anime"){
-            sub.style.display = "block";
-        } else {
-            sub.style.display = "none";
-            sub.value = "";
-        }
-    };
+function render() {
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
 
-    document.querySelectorAll(".overlay").forEach(overlay => {
-        overlay.addEventListener("click", function(e){
-            if(e.target === overlay){
-                overlay.classList.remove("active");
-            }
-        });
+    const filtered = getFilteredItems();
+    const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageItems = filtered.slice(start, end);
+
+    pageItems.forEach(item => {
+        grid.innerHTML += `
+        <div class="card">
+            <div class="delete" onclick="deleteItem(${item.id})">✕</div>
+            <div class="status ${item.visto ? 'visto' : ''}" onclick="toggleStatus(${item.id})">✔</div>
+            <div class="edit" onclick="editItem(${item.id})">✏</div>
+            <img src="${item.image}">
+            <h3>${item.title}</h3>
+            ${item.subcategory && item.category === "anime" ? `<div class="subtag">${item.subcategory}</div>` : ""}
+        </div>`;
     });
 
-    window.addItem = function(){
-        const title = document.getElementById("title").value.trim();
-        const category = document.getElementById("category").value;
-        const subcategory = document.getElementById("subcategory")?.value || "";
-        const file = document.getElementById("imageInput").files[0];
+    renderPagination(filtered.length);
+}
 
-        if(!title || !file) {
-            alert("Debes poner un nombre y seleccionar una imagen");
-            return;
-        }
+function renderPagination(totalItems) {
+    const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+    const pag = document.getElementById("pagination");
+    pag.innerHTML = "";
 
-        const reader = new FileReader();
-        reader.onload = function(e){
-            const tx = db.transaction("items", "readwrite");
-            tx.objectStore("items").add({
-                title,
-                category,
-                subcategory,
-                image: e.target.result,
-                visto: false
-            });
-            tx.oncomplete = () => {
-                loadItems();
-                document.getElementById("overlay").classList.remove("active");
-            };
-        };
-        reader.readAsDataURL(file);
-    };
+    // Anterior
+    pag.innerHTML += `<button onclick="prevPage()" ${currentPage === 1 ? 'disabled' : ''}>←</button>`;
 
-    window.toggleStatus = function(index){
-        const item = items[index];
-        item.visto = !item.visto;
-        const tx = db.transaction("items", "readwrite");
-        tx.objectStore("items").put(item);
-        tx.oncomplete = loadItems;
-    };
+    // Números
+    for (let i = 1; i <= totalPages; i++) {
+        pag.innerHTML += `<button onclick="changePage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
+    }
 
-    window.deleteItem = function(index){
-        const id = items[index].id;
-        const tx = db.transaction("items", "readwrite");
-        tx.objectStore("items").delete(id);
-        tx.oncomplete = loadItems;
-    };
+    // Siguiente
+    pag.innerHTML += `<button onclick="nextPage()" ${currentPage === totalPages ? 'disabled' : ''}>→</button>`;
+}
 
-    window.filterCategory = function(cat, btn){
-        const subbar = document.getElementById("subbar");
+window.changePage = function(page) {
+    currentPage = page;
+    render();
+};
 
-        if(cat === "anime" && currentFilter === "anime"){
-            subbar.classList.remove("active");
-            currentFilter = "all";
-            document.querySelectorAll(".topbar button").forEach(b => b.classList.remove("active"));
-            document.querySelector(".topbar > button").classList.add("active");
-            render();
-            return;
-        }
-
-        currentFilter = cat;
-        document.querySelectorAll(".topbar button").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        if(cat === "anime"){
-            subbar.classList.add("active");
-        } else {
-            subbar.classList.remove("active");
-            currentSubFilter = "all";
-            document.querySelectorAll(".subbar button").forEach(b=>b.classList.remove("active"));
-            document.querySelector(".subbar button").classList.add("active");
-        }
+window.prevPage = function() {
+    if (currentPage > 1) {
+        currentPage--;
         render();
-    };
+    }
+};
 
-    window.filterSubcategory = function(sub, btn){
-        currentSubFilter = sub;
-        document.querySelectorAll(".subbar button").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
+window.nextPage = function() {
+    const filtered = getFilteredItems();
+    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
         render();
-    };
+    }
+};
 
-    window.render = function(){
-        const grid = document.getElementById("grid");
-        const search = document.getElementById("search").value.toLowerCase();
-        grid.innerHTML = "";
+window.searchAndRender = function() {
+    currentPage = 1;
+    render();
+};
 
-        items.forEach((item, index) => {
-            const coincideCategoria = currentFilter === "all" || item.category === currentFilter;
-            const coincideSub = currentFilter !== "anime" || currentSubFilter === "all" || item.subcategory === currentSubFilter;
-            const coincideBusqueda = item.title.toLowerCase().includes(search);
+window.openModal = function() {
+    document.getElementById("overlay").classList.add("active");
+    toggleSubcategory();
+};
 
-            if(coincideCategoria && coincideBusqueda && coincideSub){
-                grid.innerHTML += `
-                <div class="card">
-                    <div class="delete" onclick="deleteItem(${index})">✕</div>
-                    <div class="status ${item.visto ? 'visto' : ''}" onclick="toggleStatus(${index})">✔</div>
-                    <div class="edit" onclick="editItem(${index})">✏</div>
-                    <img src="${item.image}">
-                    <h3>${item.title}</h3>
-                    ${item.subcategory && item.category === "anime" ? `<div class="subtag">${item.subcategory}</div>` : ""}
-                </div>`;
-            }
+window.openConfig = function() {
+    document.getElementById("configOverlay").classList.add("active");
+};
+
+window.toggleSubcategory = function() {
+    const category = document.getElementById("category").value;
+    const sub = document.getElementById("subcategory");
+    if (category === "anime") {
+        sub.style.display = "block";
+    } else {
+        sub.style.display = "none";
+        sub.value = "";
+    }
+};
+
+document.querySelectorAll(".overlay").forEach(overlay => {
+    overlay.addEventListener("click", function(e) {
+        if (e.target === overlay) {
+            overlay.classList.remove("active");
+        }
+    });
+});
+
+window.addItem = function() {
+    const title = document.getElementById("title").value.trim();
+    const category = document.getElementById("category").value;
+    const subcategory = document.getElementById("subcategory")?.value || "";
+    const file = document.getElementById("imageInput").files[0];
+
+    if (!title || !file) {
+        alert("Debes poner un nombre y seleccionar una imagen");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const tx = db.transaction("items", "readwrite");
+        tx.objectStore("items").add({
+            title,
+            category,
+            subcategory,
+            image: e.target.result,
+            visto: false
         });
-    };
-
-    window.exportData = function(){
-        const tx = db.transaction("items", "readonly");
-        const req = tx.objectStore("items").getAll();
-        req.onsuccess = function(){
-            const dataStr = JSON.stringify(req.result, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = "bitacora_backup.json";
-            a.click();
+        tx.oncomplete = () => {
+            loadItems();
+            document.getElementById("overlay").classList.remove("active");
         };
     };
+    reader.readAsDataURL(file);
+};
 
-    // ==================== IMPORT DATA (limpio) ====================
-    window.importData = function(){
-        const file = document.getElementById("importFile").files[0];
-        if(!file) return alert("Selecciona un archivo primero");
+window.toggleStatus = function(id) {
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+    item.visto = !item.visto;
+    const tx = db.transaction("items", "readwrite");
+    tx.objectStore("items").put(item);
+    tx.oncomplete = loadItems;
+};
 
-        const reader = new FileReader();
-        reader.onload = function(event){
-            try {
-                const datos = JSON.parse(event.target.result);
-                const tx = db.transaction("items", "readwrite");
-                const store = tx.objectStore("items");
+window.deleteItem = function(id) {
+    const tx = db.transaction("items", "readwrite");
+    tx.objectStore("items").delete(id);
+    tx.oncomplete = loadItems;
+};
 
-                if(Array.isArray(datos)){
-                    datos.forEach(item => {
-                        delete item.id;
-                        store.add(item);
-                    });
-                }
+window.filterCategory = function(cat, btn) {
+    currentPage = 1;
+    const subbar = document.getElementById("subbar");
 
-                tx.oncomplete = function(){
-                    alert("Importado correctamente ✅");
-                    loadItems();
-                    document.getElementById("configOverlay").classList.remove("active");
-                };
-            } catch (err) {
-                alert("El archivo no es válido o está dañado");
-            }
-        };
-        reader.readAsText(file);
-    };
+    if (cat === "anime" && currentFilter === "anime") {
+        subbar.classList.remove("active");
+        currentFilter = "all";
+        document.querySelectorAll(".topbar button").forEach(b => b.classList.remove("active"));
+        document.querySelector(".topbar > button").classList.add("active");
+        render();
+        return;
+    }
 
-    // ==================== EDICIÓN ====================
-    window.editItem = function(index) {
-        const item = items[index];
+    currentFilter = cat;
+    document.querySelectorAll(".topbar button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    if (cat === "anime") {
+        subbar.classList.add("active");
+    } else {
+        subbar.classList.remove("active");
+        currentSubFilter = "all";
+        document.querySelectorAll(".subbar button").forEach(b => b.classList.remove("active"));
+        document.querySelector(".subbar button").classList.add("active");
+    }
+    render();
+};
+
+window.filterSubcategory = function(sub, btn) {
+    currentPage = 1;
+    currentSubFilter = sub;
+    document.querySelectorAll(".subbar button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    render();
+};
+
+window.editItem = function(id) {
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+
+    editingItemId = id;
+
+    document.getElementById("title").value = item.title;
+    document.getElementById("category").value = item.category;
+    document.getElementById("subcategory").value = item.subcategory || "";
+
+    toggleSubcategory();
+
+    const preview = document.getElementById("preview");
+    preview.src = item.image;
+    preview.style.display = "block";
+
+    document.getElementById("overlay").classList.add("active");
+    document.getElementById("addBtn").style.display = "none";
+    document.getElementById("saveEdit").style.display = "block";
+    document.getElementById("cancelEdit").style.display = "block";
+};
+
+window.saveEdit = function() {
+    if (editingItemId === null) return;
+
+    const title = document.getElementById("title").value.trim();
+    if (!title) return alert("El nombre no puede estar vacío");
+
+    const category = document.getElementById("category").value;
+    const subcategory = (category === "anime") ? document.getElementById("subcategory").value : "";
+
+    const file = document.getElementById("imageInput").files[0];
+
+    const tx = db.transaction("items", "readwrite");
+    const store = tx.objectStore("items");
+
+    const getReq = store.get(editingItemId);
+    getReq.onsuccess = function() {
+        const item = getReq.result;
         if (!item) return;
 
-        editingItemId = item.id;
+        item.title = title;
+        item.category = category;
+        item.subcategory = subcategory;
 
-        document.getElementById("title").value = item.title;
-        document.getElementById("category").value = item.category;
-        document.getElementById("subcategory").value = item.subcategory || "";
-
-        toggleSubcategory();
-
-        const preview = document.getElementById("preview");
-        preview.src = item.image;
-        preview.style.display = "block";
-
-        document.getElementById("overlay").classList.add("active");
-        document.getElementById("addBtn").style.display = "none";
-        document.getElementById("saveEdit").style.display = "block";
-        document.getElementById("cancelEdit").style.display = "block";
-    };
-
-    window.saveEdit = function() {
-        if (editingItemId === null) return;
-
-        const title = document.getElementById("title").value.trim();
-        if (!title) return alert("El nombre no puede estar vacío");
-
-        const category = document.getElementById("category").value;
-        const subcategory = (category === "anime") ? document.getElementById("subcategory").value : "";
-
-        const file = document.getElementById("imageInput").files[0];
-
-        const tx = db.transaction("items", "readwrite");
-        const store = tx.objectStore("items");
-
-        const getReq = store.get(editingItemId);
-        getReq.onsuccess = function() {
-            const item = getReq.result;
-            if (!item) return;
-
-            item.title = title;
-            item.category = category;
-            item.subcategory = subcategory;
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    item.image = e.target.result;
-                    store.put(item);
-                    tx.oncomplete = finishEdit;
-                };
-                reader.readAsDataURL(file);
-            } else {
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                item.image = e.target.result;
                 store.put(item);
                 tx.oncomplete = finishEdit;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            store.put(item);
+            tx.oncomplete = finishEdit;
+        }
+    };
+};
+
+function finishEdit() {
+    closeEdit();
+    loadItems();
+}
+
+document.getElementById("cancelEdit").onclick = function() {
+    closeEdit();
+};
+
+function closeEdit() {
+    editingItemId = null;
+    document.getElementById("overlay").classList.remove("active");
+
+    document.getElementById("addBtn").style.display = "block";
+    document.getElementById("saveEdit").style.display = "none";
+    document.getElementById("cancelEdit").style.display = "none";
+
+    document.getElementById("title").value = "";
+    document.getElementById("imageInput").value = "";
+    document.getElementById("subcategory").value = "";
+    document.getElementById("preview").style.display = "none";
+    document.getElementById("preview").src = "";
+}
+
+document.getElementById("saveEdit").onclick = saveEdit;
+
+window.exportData = function() {
+    const tx = db.transaction("items", "readonly");
+    const req = tx.objectStore("items").getAll();
+    req.onsuccess = function() {
+        const dataStr = JSON.stringify(req.result, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "bitacora_backup.json";
+        a.click();
+    };
+};
+
+window.importData = function() {
+    const file = document.getElementById("importFile").files[0];
+    if (!file) return alert("Selecciona un archivo primero");
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        try {
+            const datos = JSON.parse(event.target.result);
+            const tx = db.transaction("items", "readwrite");
+            const store = tx.objectStore("items");
+
+            if (Array.isArray(datos)) {
+                datos.forEach(item => {
+                    delete item.id;
+                    store.add(item);
+                });
             }
-        };
+
+            tx.oncomplete = function() {
+                alert("Importado correctamente ✅");
+                loadItems();
+                document.getElementById("configOverlay").classList.remove("active");
+            };
+        } catch (err) {
+            alert("El archivo no es válido o está dañado");
+        }
     };
+    reader.readAsText(file);
+};
 
-    function finishEdit() {
-        closeEdit();
-        loadItems();
-    }
-
-    document.getElementById("cancelEdit").onclick = function() {
-        closeEdit();
-    };
-
-    function closeEdit() {
-        editingItemId = null;
-        document.getElementById("overlay").classList.remove("active");
-
-        document.getElementById("addBtn").style.display = "block";
-        document.getElementById("saveEdit").style.display = "none";
-        document.getElementById("cancelEdit").style.display = "none";
-
-        document.getElementById("title").value = "";
-        document.getElementById("imageInput").value = "";
-        document.getElementById("subcategory").value = "";
-        document.getElementById("preview").style.display = "none";
-        document.getElementById("preview").src = "";
-    }
-
-    document.getElementById("saveEdit").onclick = saveEdit;
-
-});
 </script>
 </body>
 </html>
