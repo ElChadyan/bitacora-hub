@@ -371,6 +371,13 @@ header {
 <div class="overlay" id="overlay">
     <div class="box">
         <input type="file" id="imageInput" accept="image/*">
+        <div id="compressionControls" style="display:none; margin-top:10px;">
+        <label>Calidad (0 = muy pequeña, 100 = original):</label>
+        <input type="range" id="qualitySlider" min="10" max="100" value="80" step="5">
+        <span id="qualityValue">80%</span>
+        <button id="compressBtn" style="margin-top:8px;">Comprimir imagen</button>
+        <p id="sizeInfo" style="font-size:0.9em; color:#aaa;"></p>
+    </div>
         <img id="preview" class="preview" style="display:none;">
         <input type="text" id="title" placeholder="Nombre">
         <select id="category" onchange="toggleSubcategory()">
@@ -412,6 +419,7 @@ let currentSubFilter = "all";
 let editingItemId = null;
 let currentPage = 1;
 const itemsPerPage = 12;
+let compressedImageData = null; // para el compresor
 
 const request = indexedDB.open("BitacoraDB", 1);
 
@@ -425,6 +433,10 @@ request.onupgradeneeded = function(e) {
 request.onsuccess = function(e) {
     db = e.target.result;
     loadItems();
+};
+
+request.onerror = function(e) {
+    console.error("Error al abrir IndexedDB:", e.target.error);
 };
 
 function loadItems() {
@@ -500,6 +512,8 @@ window.searchAndRender = function() { currentPage = 1; render(); };
 window.openModal = function() {
     document.getElementById("overlay").classList.add("active");
     toggleSubcategory();
+    compressedImageData = null;
+    document.getElementById("compressionControls").style.display = "none";
 };
 
 window.openConfig = function() {
@@ -519,12 +533,59 @@ document.querySelectorAll(".overlay").forEach(overlay => {
     });
 });
 
+document.getElementById("imageInput").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const preview = document.getElementById("preview");
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+
+    document.getElementById("compressionControls").style.display = "block";
+    document.getElementById("sizeInfo").textContent = `Tamaño original: ${(file.size / 1024).toFixed(1)} KB`;
+
+    compressedImageData = null;
+});
+
+document.getElementById("qualitySlider").addEventListener("input", function(e) {
+    document.getElementById("qualityValue").textContent = e.target.value + "%";
+});
+
+document.getElementById("compressBtn").addEventListener("click", function() {
+    const file = document.getElementById("imageInput").files[0];
+    if (!file) return alert("Primero selecciona una imagen");
+
+    const quality = parseInt(document.getElementById("qualitySlider").value) / 100;
+
+    const img = new Image();
+    img.onload = function() {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+
+        canvas.toBlob(function(blob) {
+            compressedImageData = blob;
+
+            const preview = document.getElementById("preview");
+            preview.src = URL.createObjectURL(blob);
+
+            const originalSize = (file.size / 1024).toFixed(1);
+            const newSize = (blob.size / 1024).toFixed(1);
+            document.getElementById("sizeInfo").innerHTML = 
+                `Original: ${originalSize} KB → Comprimido: ${newSize} KB <br>` +
+                `<small style="color:#0f0;">Ahorro: ${(((file.size - blob.size) / file.size) * 100).toFixed(0)}%</small>`;
+        }, "image/jpeg", quality);
+    };
+    img.src = URL.createObjectURL(file);
+});
+
 window.filterCategory = function(cat, btn) {
     currentPage = 1;
-
     const subbar = document.getElementById("subbar");
 
-    // Doble clic en Animes → desactiva subbarra
     if (cat === "anime" && currentFilter === "anime") {
         subbar.classList.remove("active");
         currentFilter = "all";
@@ -554,31 +615,44 @@ window.filterCategory = function(cat, btn) {
 window.filterSubcategory = function(sub, btn) {
     currentPage = 1;
     currentSubFilter = sub;
-
     document.querySelectorAll(".subbar button").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-
     render();
 };
 
 window.addItem = function() {
     const title = document.getElementById("title").value.trim();
-    const category = document.getElementById("category").value;
-    const subcategory = document.getElementById("subcategory")?.value || "";
-    const file = document.getElementById("imageInput").files[0];
+    if (!title) return alert("El nombre no puede estar vacío");
 
-    if (!title || !file) return alert("Debes poner un nombre y seleccionar una imagen");
+    const category = document.getElementById("category").value;
+    const subcategory = (category === "anime") ? document.getElementById("subcategory").value.trim() : "";
+
+    // Prioridad: imagen comprimida > nueva seleccionada > error si no hay ninguna
+    let finalBlob = compressedImageData;
+    if (!finalBlob) {
+        const file = document.getElementById("imageInput").files[0];
+        if (!file) return alert("Debes seleccionar una imagen");
+        finalBlob = file;
+    }
 
     const reader = new FileReader();
     reader.onload = function(e) {
         const tx = db.transaction("items", "readwrite");
-        tx.objectStore("items").add({ title, category, subcategory, image: e.target.result, visto: false });
+        tx.objectStore("items").add({
+            title,
+            category,
+            subcategory,
+            image: e.target.result,
+            visto: false
+        });
         tx.oncomplete = () => {
             loadItems();
             document.getElementById("overlay").classList.remove("active");
+            compressedImageData = null; // reset compresor
+            document.getElementById("compressionControls").style.display = "none";
         };
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(finalBlob);
 };
 
 window.toggleStatus = function(id) {
@@ -620,6 +694,9 @@ window.editItem = function(id) {
     document.getElementById("addBtn").style.display = "none";
     document.getElementById("saveEdit").style.display = "block";
     document.getElementById("cancelEdit").style.display = "block";
+
+    compressedImageData = null;
+    document.getElementById("compressionControls").style.display = "none";
 };
 
 window.saveEdit = function() {
@@ -629,7 +706,8 @@ window.saveEdit = function() {
 
     const category = document.getElementById("category").value;
     const subcategory = (category === "anime") ? document.getElementById("subcategory").value : "";
-    const file = document.getElementById("imageInput").files[0];
+
+    const finalBlob = compressedImageData || document.getElementById("imageInput").files[0];
 
     const tx = db.transaction("items", "readwrite");
     const store = tx.objectStore("items");
@@ -638,18 +716,19 @@ window.saveEdit = function() {
     getReq.onsuccess = function() {
         const item = getReq.result;
         if (!item) return;
+
         item.title = title;
         item.category = category;
         item.subcategory = subcategory;
 
-        if (file) {
+        if (finalBlob) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 item.image = e.target.result;
                 store.put(item);
                 tx.oncomplete = finishEdit;
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(finalBlob);
         } else {
             store.put(item);
             tx.oncomplete = finishEdit;
@@ -668,6 +747,7 @@ document.getElementById("cancelEdit").onclick = function() {
 
 function closeEdit() {
     editingItemId = null;
+    compressedImageData = null;
     document.getElementById("overlay").classList.remove("active");
     document.getElementById("addBtn").style.display = "block";
     document.getElementById("saveEdit").style.display = "none";
@@ -676,6 +756,7 @@ function closeEdit() {
     document.getElementById("imageInput").value = "";
     document.getElementById("subcategory").value = "";
     document.getElementById("preview").style.display = "none";
+    document.getElementById("compressionControls").style.display = "none";
 }
 
 document.getElementById("saveEdit").onclick = saveEdit;
