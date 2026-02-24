@@ -297,7 +297,6 @@ header {
     border-radius: 12px;
 }
 
-/* PAGINACIÓN (sin cambios) */
 .pagination {
     display: flex;
     justify-content: center;
@@ -412,7 +411,7 @@ let currentFilter = "all";
 let currentSubFilter = "all";
 let editingItemId = null;
 let currentPage = 1;
-const itemsPerPage = 12; // 4 columnas × 3 filas
+const itemsPerPage = 12;
 
 const request = indexedDB.open("BitacoraDB", 1);
 
@@ -433,7 +432,6 @@ function loadItems() {
     const req = tx.objectStore("items").getAll();
     req.onsuccess = () => {
         items = req.result || [];
-        currentPage = 1;
         render();
     };
 }
@@ -454,7 +452,7 @@ function render() {
 
     const filtered = getFilteredItems();
     const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
-    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage > totalPages) currentPage = totalPages || 1;
 
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
@@ -480,43 +478,24 @@ function renderPagination(totalItems) {
     const pag = document.getElementById("pagination");
     pag.innerHTML = "";
 
-    // Anterior
     pag.innerHTML += `<button onclick="prevPage()" ${currentPage === 1 ? 'disabled' : ''}>←</button>`;
 
-    // Números
     for (let i = 1; i <= totalPages; i++) {
         pag.innerHTML += `<button onclick="changePage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
     }
 
-    // Siguiente
     pag.innerHTML += `<button onclick="nextPage()" ${currentPage === totalPages ? 'disabled' : ''}>→</button>`;
 }
 
-window.changePage = function(page) {
-    currentPage = page;
-    render();
-};
-
-window.prevPage = function() {
-    if (currentPage > 1) {
-        currentPage--;
-        render();
-    }
-};
-
+window.changePage = function(page) { currentPage = page; render(); };
+window.prevPage = function() { if (currentPage > 1) { currentPage--; render(); } };
 window.nextPage = function() {
     const filtered = getFilteredItems();
     const totalPages = Math.ceil(filtered.length / itemsPerPage);
-    if (currentPage < totalPages) {
-        currentPage++;
-        render();
-    }
+    if (currentPage < totalPages) { currentPage++; render(); }
 };
 
-window.searchAndRender = function() {
-    currentPage = 1;
-    render();
-};
+window.searchAndRender = function() { currentPage = 1; render(); };
 
 window.openModal = function() {
     document.getElementById("overlay").classList.add("active");
@@ -530,21 +509,57 @@ window.openConfig = function() {
 window.toggleSubcategory = function() {
     const category = document.getElementById("category").value;
     const sub = document.getElementById("subcategory");
-    if (category === "anime") {
-        sub.style.display = "block";
-    } else {
-        sub.style.display = "none";
-        sub.value = "";
-    }
+    sub.style.display = (category === "anime") ? "block" : "none";
+    if (category !== "anime") sub.value = "";
 };
 
 document.querySelectorAll(".overlay").forEach(overlay => {
-    overlay.addEventListener("click", function(e) {
-        if (e.target === overlay) {
-            overlay.classList.remove("active");
-        }
+    overlay.addEventListener("click", e => {
+        if (e.target === overlay) overlay.classList.remove("active");
     });
 });
+
+window.filterCategory = function(cat, btn) {
+    currentPage = 1;
+
+    const subbar = document.getElementById("subbar");
+
+    // Doble clic en Animes → desactiva subbarra
+    if (cat === "anime" && currentFilter === "anime") {
+        subbar.classList.remove("active");
+        currentFilter = "all";
+        document.querySelectorAll(".topbar button").forEach(b => b.classList.remove("active"));
+        document.querySelector(".topbar button:first-child").classList.add("active");
+        render();
+        return;
+    }
+
+    currentFilter = cat;
+    currentSubFilter = "all";
+
+    document.querySelectorAll(".topbar button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    if (cat === "anime") {
+        subbar.classList.add("active");
+        document.querySelectorAll(".subbar button").forEach(b => b.classList.remove("active"));
+        document.querySelector(".subbar button:first-child").classList.add("active");
+    } else {
+        subbar.classList.remove("active");
+    }
+
+    render();
+};
+
+window.filterSubcategory = function(sub, btn) {
+    currentPage = 1;
+    currentSubFilter = sub;
+
+    document.querySelectorAll(".subbar button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    render();
+};
 
 window.addItem = function() {
     const title = document.getElementById("title").value.trim();
@@ -552,21 +567,12 @@ window.addItem = function() {
     const subcategory = document.getElementById("subcategory")?.value || "";
     const file = document.getElementById("imageInput").files[0];
 
-    if (!title || !file) {
-        alert("Debes poner un nombre y seleccionar una imagen");
-        return;
-    }
+    if (!title || !file) return alert("Debes poner un nombre y seleccionar una imagen");
 
     const reader = new FileReader();
     reader.onload = function(e) {
         const tx = db.transaction("items", "readwrite");
-        tx.objectStore("items").add({
-            title,
-            category,
-            subcategory,
-            image: e.target.result,
-            visto: false
-        });
+        tx.objectStore("items").add({ title, category, subcategory, image: e.target.result, visto: false });
         tx.oncomplete = () => {
             loadItems();
             document.getElementById("overlay").classList.remove("active");
@@ -587,49 +593,17 @@ window.toggleStatus = function(id) {
 window.deleteItem = function(id) {
     const tx = db.transaction("items", "readwrite");
     tx.objectStore("items").delete(id);
-    tx.oncomplete = loadItems;
-};
-
-window.filterCategory = function(cat, btn) {
-    currentPage = 1;
-    const subbar = document.getElementById("subbar");
-
-    if (cat === "anime" && currentFilter === "anime") {
-        subbar.classList.remove("active");
-        currentFilter = "all";
-        document.querySelectorAll(".topbar button").forEach(b => b.classList.remove("active"));
-        document.querySelector(".topbar > button").classList.add("active");
-        render();
-        return;
-    }
-
-    currentFilter = cat;
-    document.querySelectorAll(".topbar button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-
-    if (cat === "anime") {
-        subbar.classList.add("active");
-    } else {
-        subbar.classList.remove("active");
-        currentSubFilter = "all";
-        document.querySelectorAll(".subbar button").forEach(b => b.classList.remove("active"));
-        document.querySelector(".subbar button").classList.add("active");
-    }
-    render();
-};
-
-window.filterSubcategory = function(sub, btn) {
-    currentPage = 1;
-    currentSubFilter = sub;
-    document.querySelectorAll(".subbar button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    render();
+    tx.oncomplete = () => {
+        const filtered = getFilteredItems();
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages || 1;
+        loadItems();
+    };
 };
 
 window.editItem = function(id) {
     const item = items.find(i => i.id === id);
     if (!item) return;
-
     editingItemId = id;
 
     document.getElementById("title").value = item.title;
@@ -650,23 +624,20 @@ window.editItem = function(id) {
 
 window.saveEdit = function() {
     if (editingItemId === null) return;
-
     const title = document.getElementById("title").value.trim();
     if (!title) return alert("El nombre no puede estar vacío");
 
     const category = document.getElementById("category").value;
     const subcategory = (category === "anime") ? document.getElementById("subcategory").value : "";
-
     const file = document.getElementById("imageInput").files[0];
 
     const tx = db.transaction("items", "readwrite");
     const store = tx.objectStore("items");
-
     const getReq = store.get(editingItemId);
+
     getReq.onsuccess = function() {
         const item = getReq.result;
         if (!item) return;
-
         item.title = title;
         item.category = category;
         item.subcategory = subcategory;
@@ -698,16 +669,13 @@ document.getElementById("cancelEdit").onclick = function() {
 function closeEdit() {
     editingItemId = null;
     document.getElementById("overlay").classList.remove("active");
-
     document.getElementById("addBtn").style.display = "block";
     document.getElementById("saveEdit").style.display = "none";
     document.getElementById("cancelEdit").style.display = "none";
-
     document.getElementById("title").value = "";
     document.getElementById("imageInput").value = "";
     document.getElementById("subcategory").value = "";
     document.getElementById("preview").style.display = "none";
-    document.getElementById("preview").src = "";
 }
 
 document.getElementById("saveEdit").onclick = saveEdit;
@@ -733,23 +701,36 @@ window.importData = function() {
     reader.onload = function(event) {
         try {
             const datos = JSON.parse(event.target.result);
+            if (!Array.isArray(datos)) return alert("Archivo inválido");
+
             const tx = db.transaction("items", "readwrite");
             const store = tx.objectStore("items");
 
-            if (Array.isArray(datos)) {
+            const getAllReq = store.getAll();
+            getAllReq.onsuccess = function() {
+                const existing = new Set(getAllReq.result.map(i => i.title.trim().toLowerCase()));
+                let added = 0, skipped = 0;
+
                 datos.forEach(item => {
+                    const title = (item.title || "").trim().toLowerCase();
+                    if (!title || existing.has(title)) {
+                        skipped++;
+                        return;
+                    }
                     delete item.id;
                     store.add(item);
+                    added++;
+                    existing.add(title);
                 });
-            }
 
-            tx.oncomplete = function() {
-                alert("Importado correctamente ✅");
-                loadItems();
-                document.getElementById("configOverlay").classList.remove("active");
+                tx.oncomplete = () => {
+                    alert(`Importado correctamente ✅\nAgregados: ${added}\nSaltados: ${skipped}`);
+                    loadItems();
+                    document.getElementById("configOverlay").classList.remove("active");
+                };
             };
         } catch (err) {
-            alert("El archivo no es válido o está dañado");
+            alert("Error al leer el archivo");
         }
     };
     reader.readAsText(file);
