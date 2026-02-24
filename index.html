@@ -407,7 +407,26 @@ header {
         <button onclick="exportData()">Descargar progreso (.json)</button>
         <input type="file" id="importFile" accept=".json">
         <button onclick="importData()">Importar progreso</button>
+
+<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #444;">
+            <p style="text-align: center; margin: 0 0 15px;">Figurita que sigue el cursor</p>
+            
+            <input type="file" id="customFigureInput" accept="image/png" style="width: 100%; margin-bottom: 12px;">
+            
+            <div style="text-align: center;">
+                <button onclick="guardarFiguritaPersonal()" style="background: #2ecc71; margin-right: 10px;">
+                    Guardar figurita
+                </button>
+                <button onclick="quitarFigurita()" style="background: #e74c3c;">
+                    Quitar figurita
+                </button>
+            </div>
+        </div>
     </div>
+</div>
+
+<div id="customFigure" style="position: fixed; pointer-events: none; z-index: 9999; width: 120px; height: 120px; transition: transform 0.18s ease-out; will-change: transform; display: none;">
+    <img id="figureImg" src="" alt="Figurita personalizada" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));">
 </div>
 
 <script>
@@ -816,6 +835,124 @@ window.importData = function() {
     };
     reader.readAsText(file);
 };
+
+window.guardarFiguritaPersonal = function() {
+    const input = document.getElementById("customFigureInput");
+    const file = input.files[0];
+    if (!file) return alert("Selecciona una imagen PNG primero");
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            // Redimensionar a máximo 120x120 para que no sea gigante
+            const canvas = document.createElement("canvas");
+            const maxSize = 120;
+            let w = img.width;
+            let h = img.height;
+            if (w > h) {
+                if (w > maxSize) { h = Math.round(h * (maxSize / w)); w = maxSize; }
+            } else {
+                if (h > maxSize) { w = Math.round(w * (maxSize / h)); h = maxSize; }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+
+            const dataURL = canvas.toDataURL("image/png");
+            localStorage.setItem("customFigure", dataURL);
+
+            const figureImg = document.getElementById("figureImg");
+            figureImg.src = dataURL;
+            document.getElementById("customFigure").style.display = "block";
+            alert("¡Figurita guardada! Ahora la verás siguiendo el cursor.");
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
+window.quitarFigurita = function() {
+    localStorage.removeItem("customFigure");
+    document.getElementById("customFigure").style.display = "none";
+    alert("Figurita quitada.");
+};
+
+window.addEventListener("load", function() {
+    const saved = localStorage.getItem("customFigure");
+    if (saved) {
+        document.getElementById("figureImg").src = saved;
+        document.getElementById("customFigure").style.display = "block";
+    }
+});
+
+const figure = document.getElementById("customFigure");
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+let posX = mouseX;
+let posY = mouseY;
+let velX = 0;
+let velY = 0;
+let angle = 0;
+let targetAngle = 0;
+
+function updateMouse(e) {
+    if (e.touches) {
+        mouseX = e.touches[0].clientX;
+        mouseY = e.touches[0].clientY;
+    } else {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    }
+}
+
+document.addEventListener("mousemove", updateMouse);
+document.addEventListener("touchmove", updateMouse, { passive: false });
+
+function animateFigure() {
+    if (figure.style.display === "none") {
+        requestAnimationFrame(animateFigure);
+        return;
+    }
+
+    const followForce = 0.055;
+    velX += (mouseX - posX) * followForce;
+    velY += (mouseY - posY) * followForce;
+
+    velX *= 0.925;
+    velY *= 0.925;
+
+    const maxVel = 18;
+    velX = Math.max(-maxVel, Math.min(maxVel, velX));
+    velY = Math.max(-maxVel, Math.min(maxVel, velY));
+
+    posX += velX;
+    posY += velY;
+
+    targetAngle = velX * 0.28 + velY * 0.08;
+    angle += (targetAngle - angle) * 0.14;  // spring suave
+
+    figure.style.left = (posX) + "px";
+    figure.style.top  = (posY) + "px";
+    figure.style.transform = `translate(-30%, 40%) rotate(${angle}deg) scale(1.04)`;
+
+    requestAnimationFrame(animateFigure);
+}
+
+animateFigure();
+
+// Centrar al inicio
+window.addEventListener("load", () => {
+    const saved = localStorage.getItem("customFigure");
+    if (saved) {
+        document.getElementById("figureImg").src = saved;
+        document.getElementById("customFigure").style.display = "block";
+    }
+    // Posición inicial más bonita
+    posX = mouseX;
+    posY = mouseY;
+});
 
 </script>
 </body>
